@@ -1,0 +1,20 @@
+{
+  "name": "Liri-node-app",
+  "version": "1.0.0",
+  "description": "LIRI is a _Language_ Interpretation and Recognition Interface. LIRI will be a command line node app that takes in parameters and gives you back data.",
+  "main": "liri.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelWrobelPersonal/Liri-node-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MichaelWrobelPersonal/Liri-node-app/issues"
+  },
+  "homepage": "https://github.com/MichaelWrobelPersonal/Liri-node-app#readme"
+}
