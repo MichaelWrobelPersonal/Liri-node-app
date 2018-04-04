@@ -1,7 +1,9 @@
 //var Spotify = require('node-spotify-api');
 require("dotenv").config();
+//var node = require('node');
 var keys = require('./keys');
 var request = require('request');
+var liri = require('./liri');
 //request('npm');
 
 // Includes the FS package for reading and writing packages
@@ -46,8 +48,10 @@ console.log('Media is: '+media);
 //            });
         break;
         case 'spotify-this-song':
-            let songName = media;
-//            fs.appendFile(songFile,media);
+
+            let songName = "The Sign";
+            if (media != undefined)
+                songName = media;
             console.log('spotify-this-song ' + songName);
             // SPOTIFY
             var Spotify = require('node-spotify-api');
@@ -59,23 +63,49 @@ console.log('Media is: '+media);
               }
               console.log('Spotify(' + media + ') - Returned...');
               console.log(data); 
+              // TBD - Parse and display the data for the following...
+              // * Artist(s)
+              // * The song's name              
+              // * A preview link of the song from Spotify
+              // * The album that the song is from
             });
             break;
         case 'movie-this':
 //            fs.appendFile(songFile,media);
             // Grab or assemble the movie name and store it in a variable called "movieName"
-            var movieName = media;
- 
+            var MovieName = "Mr. Nobody.";
+            if (media != undefined)
+              movieName = media;
+            
             console.log('movie-this '+movieName);
             // REQUEST - OMDB
             let OMDBUrl = 'http://www.omdbapi.com/?apikey=' + process.env.OMD_APIKey + '&'
-            request(OMDBUrl, function (error, response, body)
+            console.log('Url: ' +OMDBUrl);
+            request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function(error, response, body)
+//            request(OMDBUrl, function (error, response, body)
             {
               console.log('Request-OMDB - Returned...');
               console.log('error:', error); // Print the error if one occurred
               console.log('statusCode:', response.statusCode); // Print the response status code if a response was received
               console.log('Response: ' + response );
-            //  console.log('body:', body); // Print the HTML for the Google homepage.
+              console.log('body:', body); // Print the HTML for the Google homepage.
+              // Disply the following
+              //* Title of the movie.
+              //* Year the movie came out.
+              //* IMDB Rating of the movie.
+              //* Rotten Tomatoes Rating of the movie.
+              //* Country where the movie was produced.
+              //* Language of the movie.
+              //* Plot of the movie.
+              //* Actors in the movie.
+              console.log("Title: :" + JSON.parse(body).Title);
+              console.log("Release Year: " + JSON.parse(body).Year);
+              console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+              console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings['Rotten Tomatoes']);
+              console.log("Where made: " + JSON.parse(body).Country);
+              console.log("Language: " + JSON.parse(body).Language);
+              console.log("Plot: " + JSON.parse(body).Plot);
+              console.log("Actors: " + JSON.parse(body).Actors);
             });
 
             // Run a request to the OMDB API with the movie specified
@@ -100,6 +130,7 @@ console.log('Media is: '+media);
                 return console.log(err);
               }
               console.log(data);
+              'node'+'liri'+data;
             });
             break;
             case '?':
