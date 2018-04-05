@@ -29,23 +29,20 @@ console.log('Media is: '+media);
     switch (command)
     {
         case 'my-tweets':
-            console.log('my-tweets=tbd');
+            console.log('my-tweets');
             // TWITTER
             var Twitter = require('twitter');
             var client = new Twitter( keys.twitter );
             var params = {screen_name: 'nodejs'};
             client.get('search/tweets', {q: 'node.js'}, function(error, tweets, response) {
-              console.log(tweets);
+              console.log('Twitter returned...\n' );
+              tweets.statuses.forEach(element => {
+                console.log( element.text );
+                console.log( '\n' );
+              });
+              //let ptweets = JSON.parse(tweets);
+              //console.log(ptweets);
             });
-//            client.get('statuses/user_timeline', params, function(error, tweets, response)
-//            {
-//              if (!error) {
-//                console.log(tweets);
-//              }
-//              else {
-//                console.log('Twitter - Error occurred: ' + error);
-//              }
-//            });
         break;
         case 'spotify-this-song':
 
@@ -61,13 +58,28 @@ console.log('Media is: '+media);
               if (err) {
                 return console.log('Spotify - Error occurred: ' + err);
               }
-              console.log('Spotify(' + media + ') - Returned...');
-              console.log(data); 
+              console.log('Spotify(' + media + ') - Returned...\n');
+//              console.log(data); 
               // TBD - Parse and display the data for the following...
               // * Artist(s)
               // * The song's name              
               // * A preview link of the song from Spotify
               // * The album that the song is from
+              data.tracks.items.forEach(element => {
+                if (element.type == 'track')
+                {
+//                  console.log( element );
+                  console.log( 'Album: ' + element.album.name );
+                  console.log( 'Song: ' + element.name );
+                  let artists = "";
+                  element.artists.forEach(artist => {
+                    artists += " - " + artist.name;
+                  });
+                  console.log( 'Artist(s):' + artists );
+                  console.log( 'Preview: ' + element.preview_url);
+                  console.log( '\n' );
+                }
+              });
             });
             break;
         case 'movie-this':
@@ -84,11 +96,11 @@ console.log('Media is: '+media);
             request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function(error, response, body)
 //            request(OMDBUrl, function (error, response, body)
             {
-              console.log('Request-OMDB - Returned...');
-              console.log('error:', error); // Print the error if one occurred
-              console.log('statusCode:', response.statusCode); // Print the response status code if a response was received
-              console.log('Response: ' + response );
-              console.log('body:', body); // Print the HTML for the Google homepage.
+              console.log('Request-OMDB - Returned...\n');
+ //             console.log('error:', error); // Print the error if one occurred
+ //             console.log('statusCode:', response.statusCode); // Print the response status code if a response was received
+ //             console.log('Response: ' + response );
+ //             console.log('body:', body); // Print the HTML for the Google homepage.
               // Disply the following
               //* Title of the movie.
               //* Year the movie came out.
@@ -101,11 +113,17 @@ console.log('Media is: '+media);
               console.log("Title: :" + JSON.parse(body).Title);
               console.log("Release Year: " + JSON.parse(body).Year);
               console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-              console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings['Rotten Tomatoes']);
+              let ratingValue = "";
+              JSON.parse(body).Ratings.forEach(rating => {
+                if (rating.Source === 'Rotten Tomatoes')
+                  ratingValue = rating.Value;
+              });
+              console.log( 'Rotten Tomatoes Rating: ' + ratingValue );
               console.log("Where made: " + JSON.parse(body).Country);
-              console.log("Language: " + JSON.parse(body).Language);
+              console.log("Language(s): " + JSON.parse(body).Language);
               console.log("Plot: " + JSON.parse(body).Plot);
               console.log("Actors: " + JSON.parse(body).Actors);
+              console.log('\n');
             });
 
             // Run a request to the OMDB API with the movie specified
