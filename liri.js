@@ -1,10 +1,7 @@
-//var Spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
 require("dotenv").config();
-//var node = require('node');
 var keys = require('./keys');
 var request = require('request');
-var liri = require('./liri');
-//request('npm');
 
 // Includes the FS package for reading and writing packages
 const fs = require('fs');
@@ -16,20 +13,16 @@ let command = process.argv[2];
 let media = process.argv[3];
 console.log('Command is: '+command);
 console.log('Media is: '+media);
+console.log('\n-------------------------------------------------------------\n');
 
-//// REQUEST - Google
-//request('http://www.google.com', function (error, response, body) {
-//  console.log('Request - Returned...');
-//  console.log('error:', error); // Print the error if one occurred
-//  console.log('statusCode:', response.statusCode); // Print the response status code if a response was received
-//  console.log('Response: ' + response );
-////  console.log('body:', body); // Print the HTML for the Google homepage.
-//});
+processCommand( command, media );
 
-    switch (command)
+function processCommand(operation, argument)
+{
+    switch (operation)
     {
         case 'my-tweets':
-            console.log('my-tweets');
+            console.log('my-tweets\n');
             // TWITTER
             var Twitter = require('twitter');
             var client = new Twitter( keys.twitter );
@@ -40,16 +33,14 @@ console.log('Media is: '+media);
                 console.log( element.text );
                 console.log( '\n' );
               });
-              //let ptweets = JSON.parse(tweets);
-              //console.log(ptweets);
             });
         break;
         case 'spotify-this-song':
 
             let songName = "The Sign";
-            if (media != undefined)
-                songName = media;
-            console.log('spotify-this-song ' + songName);
+            if (argument != undefined)
+                songName = argument;
+            console.log('spotify-this-song ' + songName +'\n');
             // SPOTIFY
             var Spotify = require('node-spotify-api');
             var spotify = new Spotify( keys.spotify ); 
@@ -58,9 +49,9 @@ console.log('Media is: '+media);
               if (err) {
                 return console.log('Spotify - Error occurred: ' + err);
               }
-              console.log('Spotify(' + media + ') - Returned...\n');
+              console.log('Spotify(' + argument + ') - Returned...\n');
 //              console.log(data); 
-              // TBD - Parse and display the data for the following...
+              // Parse and display the data for the following...
               // * Artist(s)
               // * The song's name              
               // * A preview link of the song from Spotify
@@ -76,7 +67,10 @@ console.log('Media is: '+media);
                     artists += " - " + artist.name;
                   });
                   console.log( 'Artist(s):' + artists );
-                  console.log( 'Preview: ' + element.preview_url);
+                  let previewUrl = element.preview_url;
+                  if ((previewUrl == undefined) || (previewUrl == 'null'))
+                     previewUrl = "Not available"
+                  console.log( 'Preview: ' + previewUrl);
                   console.log( '\n' );
                 }
               });
@@ -85,22 +79,18 @@ console.log('Media is: '+media);
         case 'movie-this':
 //            fs.appendFile(songFile,media);
             // Grab or assemble the movie name and store it in a variable called "movieName"
-            var MovieName = "Mr. Nobody.";
-            if (media != undefined)
-              movieName = media;
+            var movieName = "Mr. Nobody.";
+            if (argument != undefined)
+              movieName = argument;
             
-            console.log('movie-this '+movieName);
+            console.log('movie-this ' + movieName + '\n');
             // REQUEST - OMDB
             let OMDBUrl = 'http://www.omdbapi.com/?apikey=' + process.env.OMD_APIKey + '&'
-            console.log('Url: ' +OMDBUrl);
+//            console.log('Url: ' +OMDBUrl);
             request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function(error, response, body)
 //            request(OMDBUrl, function (error, response, body)
             {
               console.log('Request-OMDB - Returned...\n');
- //             console.log('error:', error); // Print the error if one occurred
- //             console.log('statusCode:', response.statusCode); // Print the response status code if a response was received
- //             console.log('Response: ' + response );
- //             console.log('body:', body); // Print the HTML for the Google homepage.
               // Disply the following
               //* Title of the movie.
               //* Year the movie came out.
@@ -118,7 +108,7 @@ console.log('Media is: '+media);
                 if (rating.Source === 'Rotten Tomatoes')
                   ratingValue = rating.Value;
               });
-              console.log( 'Rotten Tomatoes Rating: ' + ratingValue );
+              console.log('Rotten Tomatoes Rating: ' + ratingValue );
               console.log("Where made: " + JSON.parse(body).Country);
               console.log("Language(s): " + JSON.parse(body).Language);
               console.log("Plot: " + JSON.parse(body).Plot);
@@ -135,9 +125,8 @@ console.log('Media is: '+media);
             console.log(queryUrl);
             break;
         case 'do-what-it-says':
-            console.log('did-what-it-said');
             let songFile = 'random.txt';
-            console.log('Song File is: '+songFile);
+            console.log('Song File is: '+songFile+'\n');
               
             // Running the readFile module that's inside of fs.
             // Stores the read information into the variable "data"
@@ -148,7 +137,16 @@ console.log('Media is: '+media);
                 return console.log(err);
               }
               console.log(data);
-              'node'+'liri'+data;
+              let info = data.split(' ');
+              if (info[0] != 'do-what-it-says' )
+              {
+                processCommand( info[0], info[1]);
+                console.log('did-what-it-said');
+              }
+              else
+              {
+                console.log('do-what-it-said cannot be called from itself');
+              }
             });
             break;
             case '?':
@@ -160,3 +158,4 @@ console.log('Media is: '+media);
             console.log('movie-this <movie title>');
             console.log('do-what-it-says\n');
     }
+}

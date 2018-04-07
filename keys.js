@@ -16,6 +16,4 @@ exports.spotify = {
 exports.omd = {
     api_key: process.env.OMD_APIKey,
     id: process.env.OMD_ID
-}
-
-console.log('Keys are loaded');
+};
