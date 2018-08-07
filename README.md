@@ -12,3 +12,17 @@ node liri ?
 to get a list of commands.
 
 Note: To run Liri you wi have to provide your own credentials for thr APIs.  See the Keys.js file for more info.
+
+# Deployment 
+
+None - See instructions above
+
+# Technology Details
+
+This is an introductory project involving developing a Console based application using Node JS.
+
+# About the Theme
+The project is an attempt at a command line based knockoff of another popular language interpretation applicaton.
+
+# Contributons
+This site is part of my personal portfolio and as such direct contributions to the project are not accepted at this time.  If you have any suggestions pleaae direct them to me via email (michaelrwrobel@sbcglobal.net).
